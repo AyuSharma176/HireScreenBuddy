@@ -2,8 +2,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAllJobs, screenResumes, getAllResumes } from '../api/api'
 
+/**
+ * ScreenPage component - Allows users to select a job and run AI screening on all resumes.
+ * Shows available jobs and resumes, then runs screening on selection.
+ */
 export default function ScreenPage() {
     const navigate = useNavigate()
+    
+    // State management
     const [jobs, setJobs] = useState([])
     const [resumes, setResumes] = useState([])
     const [selectedJobId, setSelectedJobId] = useState(null)
@@ -11,10 +17,14 @@ export default function ScreenPage() {
     const [screening, setScreening] = useState(false)
     const [error, setError] = useState('')
 
+    // Load jobs and resumes on component mount
     useEffect(() => {
         fetchData()
     }, [])
 
+    /**
+     * Fetch all jobs and resumes from backend
+     */
     const fetchData = async () => {
         try {
             setLoading(true)
@@ -30,6 +40,10 @@ export default function ScreenPage() {
         }
     }
 
+    /**
+     * Handle screening button click - Run AI screening on all resumes for selected job
+     * Redirects to results page on success
+     */
     const handleScreenClick = async () => {
         if (!selectedJobId) return
 
@@ -37,6 +51,7 @@ export default function ScreenPage() {
             setScreening(true)
             setError('')
             await screenResumes(selectedJobId)
+            // Redirect to results page after screening completes
             navigate(`/dashboard/results/${selectedJobId}`)
         } catch (err) {
             setError(err.response?.data?.message || 'Screening failed. Please try again.')
@@ -44,6 +59,7 @@ export default function ScreenPage() {
         }
     }
 
+    // Loading state
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-950 text-white p-8 flex items-center justify-center">
@@ -55,11 +71,12 @@ export default function ScreenPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white p-8">
             <div className="max-w-4xl mx-auto">
-                {/* Header */}
+                {/* Page Header */}
                 <div className="mb-12">
                     <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white to-violet-300 bg-clip-text text-transparent">Screen Candidates</h1>
                     <p className="text-gray-400 text-lg mb-8">Select a job and run AI screening on all uploaded resumes</p>
                     
+                    {/* Resume count info */}
                     <div className="flex items-center gap-4 text-sm font-medium text-gray-300 bg-gradient-to-r from-violet-600/10 to-violet-500/5 border border-violet-500/20 rounded-xl p-4 backdrop-blur-sm">
                         <span>{resumes.length} resume{resumes.length !== 1 ? 's' : ''} available</span>
                     </div>

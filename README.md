@@ -2,7 +2,7 @@
 
 An intelligent resume screening system that leverages AI to automatically evaluate and score resumes against job descriptions. This application helps recruiters and hiring teams efficiently screen candidates and identify the best fits for job openings.
 
-## 🎯 Features
+##  Features
 
 - **AI-Powered Resume Screening**: Automatically score and rank resumes using advanced NLP algorithms
 - **Job Description Parsing**: Extract key requirements from job postings
@@ -12,7 +12,7 @@ An intelligent resume screening system that leverages AI to automatically evalua
 - **Dashboard**: Intuitive interface for managing job postings and screening results
 - **Real-time Results**: Instant scoring and detailed candidate evaluation reports
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ### Backend (Spring Boot)
 - **Framework**: Spring Boot 4.0.6
@@ -33,7 +33,7 @@ An intelligent resume screening system that leverages AI to automatically evalua
 - **HTTP Client**: Axios
 - **Build Tool**: Vite
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 hirescreenbuddy/
@@ -61,7 +61,7 @@ hirescreenbuddy/
 └── README.md
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - **Java 21** or higher
@@ -126,7 +126,7 @@ The backend will be available at `http://localhost:8080`
 
 The frontend will be available at `http://localhost:5173` (Vite default)
 
-## 📚 API Endpoints
+##  API Endpoints
 
 ### Job Management
 - `GET /api/jobs` - Get all jobs
@@ -147,7 +147,7 @@ The frontend will be available at `http://localhost:5173` (Vite default)
 - `GET /api/resumes/{id}` - Get resume details
 - `DELETE /api/resumes/{id}` - Delete resume
 
-## 🔒 Security & Configuration
+##  Security & Configuration
 
 ### Important: Secrets Management
 - **Never commit** `application.properties` with real credentials
@@ -163,7 +163,7 @@ DB_PASSWORD=your_password
 AI_API_KEY=your_api_key
 ```
 
-## 🧪 Testing
+##  Testing
 
 ### Backend
 ```bash
@@ -182,7 +182,7 @@ cd hirescreenbuddy-frontend
 npm run lint
 ```
 
-## 📦 Building for Production
+##  Building for Production
 
 ### Backend
 ```bash
@@ -197,21 +197,21 @@ npm run build
 # Build output will be in dist/ directory
 ```
 
-## 🔧 Development Tools
+##  Development Tools
 
 - **IDE**: IntelliJ IDEA or VS Code
 - **Database Client**: pgAdmin or DBeaver
 - **API Testing**: Postman or Insomnia
 - **Frontend Dev**: VS Code with ESLint extension
 
-## 📝 File Upload Limits
+##  File Upload Limits
 
 Currently configured limits:
 - Maximum file size: 10MB
 - Supported formats: PDF, DOCX, DOC
 - Upload directory: `uploads/resumes/`
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -219,16 +219,16 @@ Currently configured limits:
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👤 Author
+##  Author
 
 **Ayush Sharma**
 - GitHub: [@AyuSharma176](https://github.com/AyuSharma176)
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Spring Boot for the robust backend framework
 - React for the frontend framework
@@ -236,11 +236,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - PostgreSQL for reliable data storage
 - Tailwind CSS for beautiful styling
 
-## 📧 Support
+##  Support
 
 For support, open an issue on the GitHub repository or contact the development team.
 
 ---
 
 **Last Updated**: May 2026
-

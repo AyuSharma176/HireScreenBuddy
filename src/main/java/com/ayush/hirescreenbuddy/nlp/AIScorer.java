@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * AI Scorer - Uses Groq AI API to score resumes against job descriptions.
+ * Leverages LLM to analyze candidate fit and extract skill matches.
+ */
 @Component
 public class AIScorer {
 
@@ -25,15 +29,21 @@ public class AIScorer {
     private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
     private static final MediaType JSON = MediaType.get("application/json");
 
+    /**
+     * Score a resume against a job description using AI.
+     * Returns match score (0-100), matched skills, missing skills, and explanation.
+     *
+     * @param resumeText Extracted resume content
+     * @param jobDescription Job posting description
+     * @return ScoringResult with score and analysis
+     * @throws IOException If API call fails
+     */
     public ScoringResult scoreResume(String resumeText, String jobDescription) throws IOException {
 
         String prompt = buildPrompt(resumeText, jobDescription);
         String requestBody = buildRequestBody(prompt);
 
-        // ADD THIS - print request body to console
-        System.out.println("=== REQUEST BODY ===");
-        System.out.println(requestBody);
-
+        // Build and send API request
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(RequestBody.create(requestBody, JSON))
@@ -44,11 +54,6 @@ public class AIScorer {
         try (Response response = client.newCall(request).execute()) {
             String responseBody = response.body().string();
 
-            // ADD THIS - print response to console
-//            System.out.println("=== RESPONSE CODE: " + response.code() + " ===");
-//            System.out.println("=== RESPONSE BODY ===");
-//            System.out.println(responseBody);
-
             if (!response.isSuccessful()) {
                 throw new IOException("AI API call failed: " + response.code());
             }
@@ -56,6 +61,14 @@ public class AIScorer {
         }
     }
 
+    /**
+     * Build the prompt for the AI model.
+     * Instructs the AI on how to analyze resume vs job.
+     *
+     * @param resumeText Resume content
+     * @param jobDescription Job description
+     * @return Formatted prompt string
+     */
     private String buildPrompt(String resumeText, String jobDescription) {
         return """
                 You are an expert HR recruiter and resume screener.
@@ -78,12 +91,20 @@ public class AIScorer {
                 """.formatted(jobDescription, resumeText);
     }
 
+    /**
+     * Build the request body for Groq API.
+     * Configures model, temperature, and system prompt.
+     *
+     * @param prompt User prompt for analysis
+     * @return JSON request body
+     * @throws IOException If JSON serialization fails
+     */
     private String buildRequestBody(String prompt) throws IOException {
         return objectMapper.writeValueAsString(
                 objectMapper.createObjectNode()
                         .put("model", "llama-3.3-70b-versatile")
                         .put("max_completion_tokens", 1024)
-                        .put("temperature", 0.1)
+                        .put("temperature", 0.1)  // Low temperature for consistent results
                         .set("messages", objectMapper.createArrayNode()
                                 .add(objectMapper.createObjectNode()
                                         .put("role", "system")
@@ -93,6 +114,15 @@ public class AIScorer {
                                         .put("content", prompt)))
         );
     }
+
+    /**
+     * Parse the AI response and extract scoring details.
+     * Handles JSON escaping and markdown code blocks.
+     *
+     * @param responseBody API response from Groq
+     * @return ScoringResult with parsed values
+     * @throws IOException If JSON parsing fails
+     */
     private ScoringResult parseResponse(String responseBody) throws IOException {
         JsonNode root = objectMapper.readTree(responseBody);
         String content = root
@@ -102,7 +132,7 @@ public class AIScorer {
                 .path("content")
                 .asText();
 
-        // Clean up in case AI wraps in ```json ... ```
+        // Clean up in case AI wraps response in ```json ... ```
         content = content.trim();
         if (content.startsWith("```")) {
             content = content.replaceAll("```json", "").replaceAll("```", "").trim();
@@ -110,6 +140,7 @@ public class AIScorer {
 
         JsonNode result = objectMapper.readTree(content);
 
+        // Extract scoring details from JSON response
         ScoringResult scoringResult = new ScoringResult();
         scoringResult.setScore(result.path("score").asInt());
         scoringResult.setMatchedSkills(result.path("matchedSkills").asText());
@@ -119,6 +150,9 @@ public class AIScorer {
         return scoringResult;
     }
 
+    /**
+     * Inner class to hold AI scoring results.
+     */
     public static class ScoringResult {
         private int score;
         private String matchedSkills;

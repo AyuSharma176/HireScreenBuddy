@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Resume Service - Business logic for resume management.
+ * Handles file upload, text extraction, and resume CRUD operations.
+ */
 @Service
 public class ResumeService {
 
@@ -30,6 +34,17 @@ public class ResumeService {
         this.textExtractor = textExtractor;
     }
 
+    /**
+     * Upload a single resume file with text extraction.
+     * Creates directory if it doesn't exist and saves file with unique UUID.
+     *
+     * @param file Resume file (PDF or DOCX)
+     * @param candidateName Name of candidate
+     * @param email Candidate's email
+     * @return Saved resume with extracted text
+     * @throws IOException If file operations fail
+     * @throws TikaException If text extraction fails
+     */
     public Resume uploadResume(MultipartFile file, String candidateName, String email) throws IOException, TikaException {
 
         // Create upload directory if it doesn't exist
@@ -38,15 +53,15 @@ public class ResumeService {
             Files.createDirectories(uploadPath);
         }
 
-        // Save file with unique name
+        // Save file with unique UUID to prevent naming conflicts
         String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         Path filePath = uploadPath.resolve(uniqueFileName);
         Files.copy(file.getInputStream(), filePath);
 
-        // Extract text from resume
+        // Extract text from resume for AI screening
         String extractedText = textExtractor.extractText(file);
 
-        // Save to database
+        // Save resume metadata and extracted text to database
         Resume resume = new Resume();
         resume.setCandidateName(candidateName);
         resume.setEmail(email);
@@ -56,6 +71,18 @@ public class ResumeService {
 
         return resumeRepository.save(resume);
     }
+
+    /**
+     * Upload multiple resume files at once.
+     * Batch processing for bulk uploads.
+     *
+     * @param files List of resume files
+     * @param names List of candidate names
+     * @param emails List of candidate emails
+     * @return List of saved resumes
+     * @throws IOException If file operations fail
+     * @throws TikaException If text extraction fails
+     */
     public List<Resume> uploadMultipleResumes(List<MultipartFile> files, List<String> names, List<String> emails) throws IOException, TikaException {
         List<Resume> savedResumes = new ArrayList<>();
 
@@ -70,10 +97,23 @@ public class ResumeService {
 
         return savedResumes;
     }
+
+    /**
+     * Retrieve all uploaded resumes.
+     *
+     * @return List of all resumes in system
+     */
     public List<Resume> getAllResumes() {
         return resumeRepository.findAll();
     }
 
+    /**
+     * Retrieve a specific resume by ID.
+     *
+     * @param id Resume ID
+     * @return Resume details
+     * @throws RuntimeException If resume not found
+     */
     public Resume getResumeById(Long id) {
         return resumeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resume not found with id: " + id));

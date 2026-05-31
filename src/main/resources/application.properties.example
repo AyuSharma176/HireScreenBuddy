@@ -22,4 +22,3 @@ app.upload.dir=uploads/resumes
 
 # AI API Key (add yours here - get from Groq or your AI provider)
 app.ai.api-key=YOUR_AI_API_KEY_HERE
-

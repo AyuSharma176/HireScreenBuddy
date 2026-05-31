@@ -1,16 +1,27 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
+/**
+ * Navigation links available in the navbar for authenticated users
+ */
 const navLinks = [
     { path: '/dashboard/upload', label: 'Upload Resume' },
     { path: '/dashboard/create-job', label: 'Create Job' },
     { path: '/dashboard/screen', label: 'Screen' },
 ]
 
+/**
+ * Navbar component - Main navigation for the application.
+ * Displays app logo, navigation links, user info, and logout button.
+ * Only visible to authenticated users (added via ProtectedRoute).
+ */
 export default function Navbar() {
     const location = useLocation()
     const navigate = useNavigate()
     const user = JSON.parse(localStorage.getItem('user') || '{}')
 
+    /**
+     * Handle user logout - Clear tokens and redirect to login
+     */
     const handleLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
@@ -19,7 +30,7 @@ export default function Navbar() {
 
     return (
         <nav className="bg-gradient-to-r from-gray-900 via-gray-900 to-gray-800 border-b border-violet-500/20 backdrop-blur-sm px-8 py-5 flex items-center justify-between sticky top-0 z-50 shadow-lg shadow-violet-500/5">
-            {/* Logo */}
+            {/* Logo/Brand */}
             <Link
                 to="/"
                 className="text-2xl font-bold bg-gradient-to-r from-white via-white to-violet-300 bg-clip-text text-transparent hover:to-violet-200 transition-all duration-300 hover:scale-105 flex items-center gap-2"
@@ -53,7 +64,7 @@ export default function Navbar() {
                 })}
             </div>
 
-            {/* Right side - user name + logout */}
+            {/* Right side - User info and logout button */}
             <div className="flex items-center gap-4">
                 {user.name && (
                     <span className="text-sm text-gray-400">
