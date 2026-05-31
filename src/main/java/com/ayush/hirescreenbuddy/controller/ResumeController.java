@@ -31,7 +31,16 @@ public class ResumeController {
         Resume resume = resumeService.uploadResume(file, candidateName, email);
         return ResponseEntity.ok(resume);
     }
+    // Upload multiple resumes at once
+    @PostMapping("/upload-multiple")
+    public ResponseEntity<List<Resume>> uploadMultipleResumes(
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam("candidateNames") List<String> candidateNames,
+            @RequestParam("emails") List<String> emails) throws IOException, TikaException {
 
+        List<Resume> resumes = resumeService.uploadMultipleResumes(files, candidateNames, emails);
+        return ResponseEntity.ok(resumes);
+    }
     // Get all resumes
     @GetMapping
     public ResponseEntity<List<Resume>> getAllResumes() {

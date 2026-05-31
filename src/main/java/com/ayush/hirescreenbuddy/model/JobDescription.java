@@ -22,5 +22,8 @@ public class JobDescription {
     @Column(columnDefinition = "TEXT")
     private String requiredSkills;
 
+    // ADD THIS
+    private String status = "OPEN";
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

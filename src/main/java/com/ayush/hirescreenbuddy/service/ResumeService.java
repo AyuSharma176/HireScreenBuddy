@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +56,20 @@ public class ResumeService {
 
         return resumeRepository.save(resume);
     }
+    public List<Resume> uploadMultipleResumes(List<MultipartFile> files, List<String> names, List<String> emails) throws IOException, TikaException {
+        List<Resume> savedResumes = new ArrayList<>();
 
+        for (int i = 0; i < files.size(); i++) {
+            MultipartFile file = files.get(i);
+            String candidateName = i < names.size() ? names.get(i) : "Unknown";
+            String email = i < emails.size() ? emails.get(i) : "";
+
+            Resume resume = uploadResume(file, candidateName, email);
+            savedResumes.add(resume);
+        }
+
+        return savedResumes;
+    }
     public List<Resume> getAllResumes() {
         return resumeRepository.findAll();
     }

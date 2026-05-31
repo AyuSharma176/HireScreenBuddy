@@ -7,21 +7,30 @@ import CreateJobPage from './pages/CreateJobPage'
 import ScreenPage from './pages/ScreenPage'
 import ResultsPage from './pages/ResultsPage'
 import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
-  return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/dashboard/upload" element={<><Navbar /><UploadResumePage /></>} />
-          <Route path="/dashboard/create-job" element={<><Navbar /><CreateJobPage /></>} />
-          <Route path="/dashboard/screen" element={<><Navbar /><ScreenPage /></>} />
-          <Route path="/dashboard/results/:jobId" element={<><Navbar /><ResultsPage /></>} />
-        </Routes>
-      </BrowserRouter>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/dashboard/upload" element={
+                    <ProtectedRoute><Navbar /><UploadResumePage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/create-job" element={
+                    <ProtectedRoute><Navbar /><CreateJobPage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/screen" element={
+                    <ProtectedRoute><Navbar /><ScreenPage /></ProtectedRoute>
+                } />
+                <Route path="/dashboard/results/:jobId" element={
+                    <ProtectedRoute><Navbar /><ResultsPage /></ProtectedRoute>
+                } />
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App

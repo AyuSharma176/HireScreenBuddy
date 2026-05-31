@@ -1,13 +1,33 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { loginUser } from '../api/api'
 
 export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' })
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        // TODO: connect to auth API
-        window.location.href = '/dashboard/screen'
+    const handleSubmit = async () => {
+        if (!form.email || !form.password) {
+            setError('Please fill in all fields')
+            return
+        }
+        try {
+            setLoading(true)
+            setError('')
+            const res = await loginUser(form)
+            localStorage.setItem('token', res.data.token)
+            localStorage.setItem('user', JSON.stringify({
+                name: res.data.name,
+                email: res.data.email
+            }))
+            navigate('/dashboard/screen')
+        } catch (err) {
+            setError(err.response?.data?.message || 'Login failed')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -15,6 +35,12 @@ export default function LoginPage() {
             <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-8">
                 <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
                 <p className="text-gray-400 text-sm mb-8">Login to your HireScreenBuddy account</p>
+
+                {error && (
+                    <div className="bg-red-900/30 border border-red-700 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+                        {error}
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-4">
                     <div>
@@ -39,9 +65,10 @@ export default function LoginPage() {
                     </div>
                     <button
                         onClick={handleSubmit}
-                        className="w-full bg-violet-600 hover:bg-violet-500 text-white py-3 rounded-lg font-medium transition-colors mt-2"
+                        disabled={loading}
+                        className="w-full bg-violet-600 hover:bg-violet-500 disabled:bg-violet-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-medium transition-colors mt-2"
                     >
-                        Login
+                        {loading ? 'Logging in...' : 'Login'}
                     </button>
                 </div>
 
